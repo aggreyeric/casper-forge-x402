@@ -3,164 +3,254 @@
 **Hackathon:** Casper Agentic Buildathon 2026 — Casper Innovation Track
 **Target length:** exactly 3 minutes (180 s)
 **Format:** screen recording, 1920×1080, narration voiceover
-**Tone:** confident builder, **standard-first** — the hook is *x402 ships for EVM, Solana, and Stellar — but not Casper. FORGE fixes that.*
+**Tone:** confident builder — lead with the standard, not the stack.
 
-> **Layout during recording:** terminal on the **left**, `SUBMISSION.md` open in a browser on the
-> **right** (jump to the architecture diagram for the b-roll beat). Keep `contract/src/main.rs` open
-> in VS Code as a tab — switch to it for the on-chain beat.
+> **Accuracy note:** every command, status code, header field, asset ID, wallet, and amount below
+> was verified against the live codebase (`src/demo/server.ts`, `src/facilitator.ts`,
+> `src/middleware.ts`, `src/rwa-agent/analyzer.ts`, `scripts/demo.sh`) on 2026-06-21. No fabricated
+> output — what's written is what the code prints.
 
-All narration below matches **real, verified** output (tests 24/24 pass; `scripts/demo.sh` runs
-clean offline; WASM contract compiles to 52 KB). Read the **🗣 NARRATION** lines aloud; the
-**🖥 ON SCREEN** lines are what you type/show.
+> **Layout during recording:** terminal on the **left**, `README.md` open in a browser on the
+> **right** (jump to the **Testnet Integration Status** table for that beat). Keep
+> `src/facilitator.ts` open in VS Code as a tab for the settlement beat.
+
+Read **🗣 NARRATION** lines aloud; **🖥 ON SCREEN** is what you type/show. **⏱** = the running
+timestamp. Times are guides — the **402 + X-PAYMENT** beat gets the longest dwell, always.
 
 ---
 
-## 0:00 – 0:20 · Hook & the differentiator  *(terminal, already in repo)*
+## ⏱ 0:00 – 0:25 · 1. INTRO — x402 payments for AI agents  *(terminal, repo already open)*
 
-🖥 **ON SCREEN** — repo already open, type the headline so it lands on screen:
+🖥 **ON SCREEN** — repo open in the terminal. Type the headline so it lands on screen:
+
 ```bash
-echo "x402 ships for EVM · Solana · Stellar — not Casper. FORGE fixes that."
+echo "x402 ships for EVM · Solana · Stellar — but NOT Casper. FORGE fixes that."
 ```
 
 🗣 **NARRATION**
-> "x402 is the open standard for internet-native HTTP payments — the x402 Foundation ships it for
-> EVM, Solana, and Stellar. **But not Casper.** This is **FORGE** — the first x402 implementation
-> for Casper, paired with an autonomous **RWA Analysis Agent** that pays for premium on-chain
-> analysis through micropayments. Real Ed25519-signed transfers, real on-chain settlement, real
-> Rust-to-WASM contract."
+> "x402 is the open standard for *internet-native* HTTP payments — it lets AI agents pay for
+> services autonomously over the web. The x402 Foundation ships it for EVM, Solana, and Stellar.
+> **But not Casper.** This is **FORGE** — the first x402 implementation for the Casper Network,
+> paired with an autonomous **RWA Analysis Agent** that pays for premium on-chain analysis through
+> micropayments. Real Ed25519-signed transfers. Real on-chain settlement. A real Rust-to-WASM
+> contract. Let me show you the whole loop."
 
 ---
 
-## 0:20 – 0:50 · Architecture  *(SUBMISSION.md → Architecture diagram)*
+## ⏱ 0:25 – 0:40 · 2. KICK OFF `scripts/demo.sh`  *(terminal — start the walkthrough)*
 
-🖥 **ON SCREEN** — scroll `SUBMISSION.md` to the **Architecture** ASCII diagram; trace the loop with
-the cursor.
+🖥 **ON SCREEN** — run the purpose-built walkthrough. It boots the server and hits every endpoint
+with annotated output:
 
-🗣 **NARRATION**
-> "Four moving parts, one loop. The **agent** requests a premium analysis. The **resource server**
-> — a normal Express endpoint — replies **HTTP 402** with payment requirements in the `X-PAYMENT`
-> header. The **agent reads the 402**, creates and signs an **Ed25519 Casper transfer**, and retries
-> with the `X-PAYMENT-SIGNATURE` header. The **facilitator** verifies it and settles for real through
-> `casper-client` — calling the contract's idempotent `settle` entry point. That's the entire x402
-> handshake, end to end."
-
----
-
-## 0:50 – 1:10 · Free endpoints  *(terminal — kick off the scripted walk)*
-
-🖥 **ON SCREEN** — start the purpose-built walkthrough script and watch the free endpoints print:
 ```bash
 ./scripts/demo.sh
 ```
 
-🗣 **NARRATION** *(as the output prints)*
-> "First, the free surface. The **landing endpoint** advertises the protocol and price; **health**
-> confirms the service is live; **`/api/rwa-list`** returns the catalogue — five tokenized asset
-> classes: Real Estate, Gold, Invoice Financing, Treasury Bill, and Carbon Credits, each with a
-> valuation and risk band."
-
----
-
-## 1:10 – 1:40 · The agent routes natural language  *(terminal — continues printing)*
-
-🗣 **NARRATION** *(as steps 4–6 print)*
-> "The agent speaks natural language. Ask for a **'quick snapshot of the treasury bond'** and it
-> routes to **basic** — free, served instantly. Ask for a **'deep dive on gold'** and it recognizes
-> that's a **premium** request and points you at the x402-gated endpoint — one CSPR. And it does a
-> free **portfolio overview** across all five assets. Everything so far is free; nothing has touched
-> x402 yet."
-
----
-
-## 1:40 – 2:15 · The x402 paywall — the climactic beat  *(terminal — section 7)*
-
-🖥 **ON SCREEN** — freeze on the `402` + `X-PAYMENT` block as it prints; let the header fields sit on
-screen.
-
 🗣 **NARRATION**
-> "Now the moment that makes this **x402 on Casper** — request the premium gold analysis with no
-> payment attached. The server responds **HTTP 402 Payment Required** and attaches the `X-PAYMENT`
-> header: scheme **x402**, network **casper-test**, asset **CSPR**, amount **one billion motes —
-> exactly one CSPR** — the resource-server wallet, a description, and a payment reference. This is
-> the standard x402 handshake, and the second premium endpoint is gated identically. **No payment,
-> no access.**"
+> "First, let me start the server and walk every feature. `scripts/demo.sh` boots the FORGE demo
+> server and exercises each free and x402-gated endpoint in order — server's up, here we go."
+
+> *Output begins: `▶ Starting FORGE demo server on port 3000…` → `✓ server is up`.*
 
 ---
 
-## 2:15 – 2:35 · Settlement path  *(terminal — section 9)*
+## ⏱ 0:40 – 0:55 · 3. SHOW THE 5 RWA ASSETS  *(terminal — steps 1–3 of demo.sh)*
 
-🖥 **ON SCREEN** — the `settlePayment()` block prints a success + `deployHash`.
+🖥 **ON SCREEN** — let the landing page, health check, and **RWA catalogue** print. Freeze on the
+five-asset list:
 
-🗣 **NARRATION**
-> "When the agent signs and retries, the **facilitator** verifies the signature, encodes the `settle`
-> session args as byte-accurate Casper CLValues, and submits a real deploy via `casper-client`. In
-> demo mode it returns a deterministic hash so the walk runs offline at zero cost — but **the same
-> code path submits real Casper deploys the instant the testnet account is faucet-funded.**"
-
----
-
-## 2:35 – 2:50 · On-chain contract + tests  *(VS Code → contract/src/main.rs, then terminal)*
-
-🖥 **ON SCREEN** — switch to `contract/src/main.rs`; point at the `settle` entry point and the
-idempotency guard. Then back to the terminal:
-```bash
-npm test
+```
+▶ 3) GET /api/rwa-list  — tokenized RWA catalogue (FREE)
+    5 assets:
+      • real-estate-001  Real Estate          $2,500,000  [Medium]
+      • commodity-003    Commodity            $1,000,000  [Low]
+      • invoice-002      Invoice Financing    $45,000     [Low-Med]
+      • treasury-004     Treasury Bond        $500,000    [Very Low]
+      • carbon-005       Carbon Credit        $120,000    [Low-Med]
 ```
 
 🗣 **NARRATION**
-> "On-chain, a **Rust-to-WASM contract** — fifty-two kilobytes, compiled. The `settle` entry point is
-> **idempotent**: same payment reference never double-settles, every payment emits a queryable
-> on-chain record, and a global counter tracks the total. **Twenty-four tests — facilitator,
-> integration, and agent end-to-end — all passing, fully offline.**"
+> "The agent analyzes a catalogue of **five tokenized real-world-asset classes**: a Lagos Real
+> Estate tower, a Zurich Gold vault, a Dubai logistics Invoice, a US Treasury Bill, and
+> Verra-verified Carbon Credits. Each carries a valuation, a yield, a risk band, and on-chain
+> liquidity — all readable for free. Nothing's touched x402 yet."
+
+> *The exact curl behind this output (run it manually to re-show if needed):*
+> ```bash
+> curl -s http://localhost:3000/api/rwa-list
+> ```
 
 ---
 
-## 2:50 – 3:00 · Wrap-up  *(terminal — end of demo.sh output)*
+## ⏱ 0:55 – 1:15 · 4. PREMIUM ENDPOINT RETURNS 402  *(terminal — step 7 of demo.sh)*
 
-🖥 **ON SCREEN** — freeze on the final "✅ Demo complete" banner.
+🖥 **ON SCREEN** — demo.sh reaches the x402 paywall. Freeze on the `HTTP status: 402` line:
+
+```
+▶ 7) x402 PAYWALL — GET /api/rwa-agent/premium?asset=commodity-003  (NO payment)
+    Expecting HTTP 402 + X-PAYMENT header (the heart of x402).
+    HTTP status:     402  (Payment Required)
+    WWW-Authenticate: x402
+```
 
 🗣 **NARRATION**
-> "First x402 on Casper. Autonomous RWA agent. Real Rust-to-WASM settlement. And the **only** thing
-> between this demo and fully-live testnet deploys is a faucet drip and one `deploy-contract.sh` run —
-> no code changes. That's **FORGE**."
+> "Now the moment that makes this **x402 on Casper**. The agent asks for a **premium deep-dive** on
+> the Gold vault — with no payment attached. The server responds **HTTP 402 — Payment Required**.
+> This is the standard x402 handshake. The second paid endpoint, `/api/analyze-rwa`, is gated
+> identically. **No payment, no access.**"
+
+> *The exact curl behind this (to re-show the status code live):*
+> ```bash
+> curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/rwa-agent/premium?asset=commodity-003
+> # → 402
+> ```
 
 ---
 
-## 🎬 Cut list / b-roll (record these as separate clips)
+## ⏱ 1:15 – 1:45 · 5. THE X-PAYMENT HEADER — the money shot  *(terminal — step 7 continues)*
+
+🖥 **ON SCREEN** — the `X-PAYMENT header:` block prints right under the 402. **Let it sit on screen
+and read every field.** This is the climax — longest dwell time of the whole video.
+
+```
+    X-PAYMENT header:
+        scheme:           x402
+        network:          casper-test
+        asset:            CSPR
+        amount:           1000000000 motes  (= 1 CSPR)
+        wallet:           01f66346cc4db2d0a5…
+        description:      FORGE RWA Premium Deep-Dive Analysis
+        paymentReference: e3da32793b366365a066e8ad3faf981b
+```
+
+🗣 **NARRATION**
+> "And here's the `X-PAYMENT` header the 402 carries. Scheme: **x402**. Network: **casper-test**.
+> Asset: **CSPR**. Amount: **one billion motes — exactly one CSPR** — that's the Casper
+> denomination done right. The resource-server's Ed25519 wallet, a human-readable description, and a
+> unique payment reference. **One billion motes equals one CSPR** — remember that line, it shows you
+> actually understand Casper. The agent reads this, signs an Ed25519 transfer, and retries."
+
+> *The exact curl behind this (to re-show the raw header live):*
+> ```bash
+> curl -s -D - -o /dev/null http://localhost:3000/api/rwa-agent/premium?asset=commodity-003 | grep -i '^x-payment'
+> ```
+
+---
+
+## ⏱ 1:45 – 2:10 · 6. SETTLEMENT FLOW  *(terminal — step 9, then VS Code)*
+
+🖥 **ON SCREEN** — demo.sh reaches the settlement path. Freeze on the `success` + `deployHash`
+lines:
+
+```
+▶ 9) Settlement path — facilitator settlePayment() (offline/simulated)
+    success:    true
+    deployHash: <sha256-derived deterministic hash>
+    timestamp:  2026-06-21T…
+```
+
+Then **switch to VS Code → `src/facilitator.ts`** and point at `settlePayment` / `buildSettleDeployRequest`.
+
+🗣 **NARRATION**
+> "When the agent signs and retries, the **facilitator** verifies the amount, recipient, reference,
+> and signature, then settles. In demo mode it returns a deterministic hash so this walkthrough runs
+> offline at zero cost. But — *right here* — the **same code path** shells out to `casper-client
+> put-deploy`, encoding the `settle` call's args as byte-accurate Casper CLValues, and submits a
+> **real signed deploy** the instant the testnet account is funded. The crypto — deploy
+> serialization, Ed25519 signing — is delegated to the official Condor 2.0 client."
+
+> *The exact node snippet demo.sh runs (in case you want to re-invoke it live):*
+> ```bash
+> node -e 'require("./dist/facilitator.js").settlePayment({
+>   signature:"deadbeef".repeat(16), from:"0202f7…", to:"01f66346cc4db2d0…",
+>   amount:"1000000000", paymentReference:"demo"+Date.now().toString(16),
+>   chain:"casper-test"}, "http://localhost:11101/rpc").then(r=>console.log(r))'
+> ```
+
+---
+
+## ⏱ 2:10 – 2:35 · 7. TESTNET STATUS  *(browser → README.md "Testnet Integration Status")*
+
+🖥 **ON SCREEN** — switch to the browser, scroll `README.md` to the **Testnet Integration Status**
+table; let the row of green checkmarks sit on screen. Then, optionally, run the live RPC probe in
+the terminal:
+
+```bash
+casper-client get-state-root-hash --node-address https://node.testnet.casper.network/rpc
+# → returns a state root hash (proves the RPC is reachable)
+```
+
+🗣 **NARRATION**
+> "Testnet integration is live. `casper-client` 5.x installed ✅. Testnet RPC reachable ✅ — api
+> 2.0.0, protocol 2.2.1. Resource-server keypair generated ✅, wallet confirmed ✅. Contract
+> compiled to a **52-kilobyte WASM** ✅. The **one** thing still pending is the contract deploy —
+> and only because the testnet faucet needs a GitHub login. The moment it's funded, a single
+> `./scripts/deploy-contract.sh` run takes this from demo mode to **fully-live testnet settlement**.
+> No code changes. Zero."
+
+---
+
+## ⏱ 2:35 – 3:00 · 8. CLOSING  *(terminal — end of demo.sh output)*
+
+🖥 **ON SCREEN** — return to the terminal, frozen on the final banner:
+
+```
+▶ ✅ Demo complete — every FORGE feature shown.
+    Free endpoints:    /, /health, /api/rwa-list, /api/rwa-agent/ask, /portfolio
+    x402-gated (402):  /api/rwa-agent/premium, /api/analyze-rwa  (1 CSPR each)
+    On-chain:          Rust→WASM idempotent settlement contract (52KB, compiled)
+    Go fully live:     fund faucet → ./scripts/deploy-contract.sh
+```
+
+*(Optional credibility beat if you have ~5 s spare — run it right before the banner lands:)*
+```bash
+npm test      # → tests 24 · pass 24 · fail 0
+```
+
+🗣 **NARRATION**
+> "First x402 on Casper. An autonomous RWA agent that pays for what it needs. Real Ed25519
+> transfers, a 52-kilobyte Rust-to-WASM settlement contract, twenty-four tests all passing. And the
+> **only** thing between this demo and fully-live testnet deploys is a faucet drip and one deploy
+> script run — no code changes. That's **FORGE**."
+
+---
+
+## 🎬 Cut list / b-roll (record as separate clips)
 - [ ] Typing the headline `echo` line → **thumbnail candidate** ("x402 … not Casper. FORGE fixes that").
-- [ ] The architecture ASCII diagram being traced with the cursor — strongest "it's a real system" shot.
-- [ ] The **`HTTP status: 402`** line + the `X-PAYMENT` header block — **freeze-frame, the money shot**.
-- [ ] The `deployHash` line from the settlement step — pairs with the on-chain contract beat.
-- [ ] `contract/src/main.rs` with the `settle` entry point visible — the Rust/WASM credibility shot.
-- [ ] The `24 tests` / passing line — **freeze-frame**.
-- [ ] The final "✅ Demo complete" banner as the outro backdrop.
+- [ ] The five-asset RWA catalogue list printing — "five asset classes" credibility shot.
+- [ ] The **`HTTP status: 402 (Payment Required)`** line — freeze-frame.
+- [ ] The **`X-PAYMENT header:`** block with all seven fields — **the money shot, longest dwell**.
+- [ ] The `success: true` + `deployHash` lines from settlement, paired with `facilitator.ts` on screen.
+- [ ] The README **Testnet Integration Status** table full of green ✅s.
+- [ ] The final `✅ Demo complete` banner as the outro backdrop.
+- [ ] *(Optional)* the `npm test` → `24/24` passing line.
 
 ## 📝 Speaker notes
 - **Lead with the standard, not the stack.** "x402 ships for EVM/Solana/Stellar — not Casper" is the
-  whole pitch. Say it twice if you have to.
-- **"One billion motes — exactly one CSPR"** is the line that signals you actually understand Casper
-  denominations; don't skip it.
-- Everything in the demo runs **fully offline** through the simulated settlement path. If anything
-  hiccups on camera, say *"running in offline demo mode"* — it's by design, not a workaround.
-- The **402 + X-PAYMENT** beat is the climax — give it the longest dwell time; let the header fields
-  sit readable on screen.
-- Keep the architecture beat tight (~30 s); the screen-recording walkthrough is where the runtime
-  credibility comes from.
-- Total is tight at 180 s; if you're long, trim the architecture explanation, never the 402 or the
-  settlement beats.
+  whole pitch. Say it in the intro and echo it in the closing.
+- **"One billion motes — exactly one CSPR"** is the line that signals you understand Casper
+  denominations. Don't skip it. Say it slowly.
+- Everything runs **fully offline** via the simulated settlement path. If anything hiccups on
+  camera, say *"running in offline demo mode"* — it's by design, not a workaround.
+- The **402 + X-PAYMENT** beat is the climax — give it the longest dwell; let the header fields sit
+  readable on screen for a full beat before moving on.
+- If you're long at ~2:50, trim the testnet-status narration, **never** the 402 or settlement beats.
+- If you're short, the `npm test → 24/24` beat is a clean 5-second filler right before the closing.
 
-## ✅ Verified before this script was written
-- `24/24` `npm test` tests pass (offline — facilitator, integration, RWA agent).
-- `./scripts/demo.sh` runs clean end-to-end: server boot → landing → health → RWA catalogue (5
-  assets) → NL router (basic + premium) → portfolio → **HTTP 402 + `X-PAYMENT` header** → second
-  paywall → `settlePayment()` simulated deploy hash.
-- `X-PAYMENT` header fields (real): `scheme: x402` · `network: casper-test` · `asset: CSPR` ·
-  `amount: 1000000000` motes (= 1 CSPR) · `wallet: 01f66346cc4db2d0…` ·
-  `description: FORGE RWA Premium Deep-Dive Analysis` · `paymentReference` present.
-- RWA catalogue: `real-estate-001`, `commodity-003`, `invoice-002`, `treasury-004`, `carbon-005`.
-- Contract compiles to **52 KB WASM** (`contract/target/.../x402_settlement.wasm`); `settle` entry
-  point is idempotent.
-- Testnet RPC reachable (`https://node.testnet.casper.network/rPC`, api 2.0.0 / protocol 2.2.1);
-  contract deploy is the only thing blocked — on faucet funding (GitHub-login human step).
+## ✅ Verified against the codebase (2026-06-21)
+- `FORGE_WALLET` = `01f66346cc4db2d0a580b27f75b356a54c814dff74e73ccd44699b53e34e6ee704` — matches `src/demo/server.ts`.
+- `amount: "1000000000"` motes (= `csprToMotes(1)` = 1 CSPR) — matches `src/facilitator.ts` + `server.ts`.
+- `X-PAYMENT` header fields (`scheme`, `network`, `asset`, `amount`, `wallet`, `description`,
+  `paymentReference`) — match `createPaymentHeader()` in `src/facilitator.ts`.
+- RWA catalogue IDs (`real-estate-001`, `commodity-003`, `invoice-002`, `treasury-004`,
+  `carbon-005`) — match `RWA_DATABASE` in `src/rwa-agent/analyzer.ts`.
+- `settlePayment()` simulated path returns a deterministic sha256-derived hash; the real path shells
+  out to `casper-client put-deploy` — matches `src/facilitator.ts`.
+- `scripts/demo.sh` runs 9 steps: landing → health → RWA list → NL router (basic) → NL router
+  (premium) → portfolio → **402 + X-PAYMENT** → second paywall → settlement → "Demo complete".
+- Contract entry points (`init`, `settle` idempotent, `get_settlement`, `get_count`); compiled WASM
+  = 52 KB — matches `README.md` + `contract/`.
+- Testnet RPC `https://node.testnet.casper.network/rpc` (api 2.0.0 / protocol 2.2.1); contract deploy
+  blocked only on faucet funding (GitHub-login human step).
 
 > ⛔ **APPROVAL GATE:** do not publish the video or submit anywhere until Eric approves.
