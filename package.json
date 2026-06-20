@@ -1,0 +1,32 @@
+{
+  "name": "forge-x402-casper",
+  "version": "0.1.0",
+  "description": "x402 payment protocol facilitator for Casper Network — enables AI agents to pay for services via HTTP 402 micropayments settled on-chain",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/test/*.test.js",
+    "test:unit": "node --test dist/test/facilitator.test.js",
+    "test:integration": "node --test dist/test/integration.test.js",
+    "demo": "node dist/demo/server.js"
+  },
+  "keywords": [
+    "casper",
+    "x402",
+    "payment",
+    "ai-agent",
+    "blockchain",
+    "micropayments",
+    "csp"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/express": "^4.17.0",
+    "@types/node": "^20.0.0"
+  }
+}

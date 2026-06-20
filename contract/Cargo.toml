@@ -1,0 +1,21 @@
+[package]
+name = "x402-settlement"
+version = "0.1.0"
+edition = "2021"
+description = "On-chain settlement contract for x402 payments on Casper Network"
+license = "MIT"
+
+[dependencies]
+casper-contract = "4.0.0"
+casper-types = "4.0.2"
+
+[[bin]]
+name = "x402_settlement"
+path = "src/main.rs"
+bench = false
+doctest = false
+test = false
+
+[profile.release]
+opt-level = 3
+lto = true

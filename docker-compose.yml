@@ -1,0 +1,42 @@
+# FORGE — x402 + Casper + RWA Agent
+#
+# `docker compose up` runs the Node.js demo server. The casper-client sidecar
+# is optional (used by the facilitator's settlePayment() to sign/submit
+# deploys on-chain; if absent the facilitator falls back to the simulated path).
+#
+# Before first deploy:
+#   1. casper-client keygen .keys
+#   2. fund the public key via the testnet faucet (GitHub login): https://testnet.cspr.live/
+#   3. ./scripts/deploy-contract.sh   # writes .deploy.env with the contract hash
+
+services:
+  forge-app:
+    build: .
+    image: forge-x402-casper:latest
+    container_name: forge-app
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      # Wallet that RECEIVES x402 payments (resource server). Defaults to the
+      # generated testnet public key baked into server.ts.
+      FORGE_WALLET: ${FORGE_WALLET:-01f66346cc4db2d0a580b27f75b356a54c814dff74e73ccd44699b53e34e6ee704}
+      CASPER_RPC: "https://node.testnet.casper.network/rpc"
+      CASPER_CHAIN: "casper-test"
+    env_file:
+      - path: ./.deploy.env
+        required: false
+    depends_on:
+      - casper-client
+    restart: unless-stopped
+
+  # Optional sidecar: exposes the casper-client binary to the app container.
+  # settlePayment() shells out to `casper-client`; keeping it in a sidecar keeps
+  # the Node image small and lets you swap client versions independently.
+  casper-client:
+    image: alpine:3.20
+    container_name: forge-casper-client
+    entrypoint: ["sleep", "infinity"]
+    command: []
+    restart: unless-stopped
+    tty: true

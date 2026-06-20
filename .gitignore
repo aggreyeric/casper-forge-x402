@@ -1,0 +1,17 @@
+# Rust target dir
+contract/target/
+
+# Node modules
+node_modules/
+
+# Dist (compiled)
+dist/
+
+# Environment
+.env
+*.log
+
+# Secrets — NEVER commit keys or deploy metadata
+.keys/
+.deploy.env
+*.pem
