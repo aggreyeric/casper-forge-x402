@@ -57,6 +57,12 @@ npm test        # 24 tests pass
 npm run demo    # Start demo server on :3000
 ```
 
+### Full end-to-end feature walkthrough (for recording the demo video):
+```bash
+./scripts/demo.sh        # boots the server + hits every endpoint with annotated output
+```
+See **[SUBMISSION.md](./SUBMISSION.md)** for the full project overview, architecture, and demo guide.
+
 ### On-chain (Rust contract → WASM):
 ```bash
 cd contract

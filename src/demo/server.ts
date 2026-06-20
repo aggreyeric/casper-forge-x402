@@ -35,20 +35,38 @@ const rwaAgent = new RwaAgent({ serverUrl: process.env.SERVER_URL || `http://loc
 const ANALYSIS_PRICE_CSPR = 1;
 const ANALYSIS_PRICE_MOTES = csprToMotes(ANALYSIS_PRICE_CSPR);
 
-const RWA_DATABASE = {
-  'real-estate-001': {
-    assetId: 'real-estate-001', type: 'Real Estate', location: 'Lagos, Nigeria',
-    valuation: 250000, currency: 'USDC', riskScore: 0.25, yield: 0.085,
-  },
-  'invoice-002': {
-    assetId: 'invoice-002', type: 'Invoice Financing', issuer: 'DropPA Logistics',
-    valuation: 45000, currency: 'USDC', riskScore: 0.15, yield: 0.12,
-  },
-  'commodity-003': {
-    assetId: 'commodity-003', type: 'Commodity', commodity: 'Gold (tokenized)',
-    valuation: 1000000, currency: 'USDC', riskScore: 0.10, yield: 0.05,
-  },
-};
+// The single source of truth for asset data is the analyzer catalogue
+// (src/rwa-agent/analyzer.ts → 5 asset classes). The demo server reads from
+// there so every listed RWA is analysable on every paid endpoint.
+app.get(
+  '/api/analyze-rwa',
+  x402Middleware({
+    amount: ANALYSIS_PRICE_MOTES,
+    wallet: FORGE_WALLET,
+    description: 'FORGE RWA Analysis',
+    chain: 'casper-test',
+  }),
+  (req, res) => {
+    const assetId = (req.query.asset as string) || 'real-estate-001';
+    const asset = getAsset(assetId);
+    if (!asset) { res.status(404).json({ error: 'RWA not found', assetId }); return; }
+    // Full deep-dive so /api/analyze-rwa is consistent with /api/rwa-agent/premium.
+    const result = analyzePremium(asset);
+    res.json({
+      asset: {
+        assetId: asset.assetId, type: asset.type, name: asset.name,
+        issuer: asset.issuer, location: asset.location,
+        valuation: asset.valuation, currency: asset.currency,
+      },
+      analysisDate: new Date().toISOString(),
+      riskAssessment: result.riskAssessment,
+      yieldProjection: result.yieldProjection,
+      recommendation: result.recommendation,
+      deepDive: result.deepDive,
+      paymentReceipt: (req as any).paymentReceipt,
+    });
+  }
+);
 
 app.get('/', (_req, res) => {
   res.json({
@@ -129,33 +147,6 @@ app.get(
       result,
       paymentReceipt: (req as any).paymentReceipt,
     });
-  }
-);
-
-app.get(
-  '/api/analyze-rwa',
-  x402Middleware({
-    amount: ANALYSIS_PRICE_MOTES,
-    wallet: FORGE_WALLET,
-    description: 'FORGE RWA Analysis',
-    chain: 'casper-test',
-  }),
-  (req, res) => {
-    const assetId = (req.query.asset as string) || 'real-estate-001';
-    const asset = RWA_DATABASE[assetId as keyof typeof RWA_DATABASE];
-    if (!asset) { res.status(404).json({ error: 'RWA not found', assetId }); return; }
-    const analysis = {
-      asset,
-      analysisDate: new Date().toISOString(),
-      riskAssessment: {
-        score: asset.riskScore,
-        rating: asset.riskScore < 0.2 ? 'LOW RISK' : asset.riskScore < 0.4 ? 'MEDIUM RISK' : 'HIGH RISK',
-      },
-      yieldProjection: { projectedAPY: asset.yield, confidence: 0.85, timeframe: '12 months' },
-      recommendation: asset.riskScore < 0.2 ? 'ACCUMULATE' : asset.riskScore < 0.4 ? 'HOLD' : 'REDUCE',
-      paymentReceipt: (req as any).paymentReceipt,
-    };
-    res.json(analysis);
   }
 );
 
