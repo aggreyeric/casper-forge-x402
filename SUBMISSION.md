@@ -1,9 +1,15 @@
 # FORGE — First x402 Payment Protocol Implementation for Casper Network
 
+> **One-liner:** An autonomous RWA-analysis agent that pays for premium on-chain insights over the x402 HTTP-payment standard — the first x402 implementation on Casper.
+
 **Hackathon:** Casper Agentic Buildathon 2026
 **Track:** Casper Innovation Track
 **Team:** Solo — Eric
 **Status:** ✅ Code complete · 24/24 tests passing · contract compiled to WASM (52KB)
+**Links:**
+- 🔗 **GitHub:** https://github.com/aggreyeric/casper-forge-x402
+- 🎥 **Demo video:** _record after testnet funding — walkthrough script: `./scripts/demo.sh`_
+- 📋 **Funding guide:** [`FUNDING_CHECKLIST.md`](./FUNDING_CHECKLIST.md) (faucet → deploy → live)
 
 ---
 

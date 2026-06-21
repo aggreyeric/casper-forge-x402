@@ -1,12 +1,16 @@
-# FORGE x402 — First x402 Payment Protocol Implementation for Casper Network
+# FORGE x402 — First x402 Payment Protocol for Casper Network
 
-Built for **Casper Agentic Buildathon 2026** ($150K prize pool).
+> **The first native implementation of the x402 HTTP-402 payment protocol on Casper Network.** An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, just a signed Ed25519 transfer.
+
+![Casper](https://img.shields.io/badge/Casper-Condor%202.0-blue) ![Rust](https://img.shields.io/badge/Rust-WASM%20Contract-orange) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6) ![x402](https://img.shields.io/badge/x402-Payment%20Protocol-brightgreen) ![Tests](https://img.shields.io/badge/tests-24%20passing-success) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker) ![License](https://img.shields.io/badge/license-MIT-green)
+
+_Built for the **Casper Agentic Buildathon 2026**._
 
 ## What This Is
 
 The **FIRST** implementation of the [x402 HTTP payment protocol](https://github.com/x402-foundation/x402) for Casper Network. x402 is an open standard for internet-native payments — it lets AI agents autonomously pay for services via HTTP 402 (Payment Required) responses, settled on-chain.
 
-The x402 Foundation provides packages for EVM, Solana, and Stellar — but **NOT Casper**. This fills that gap, and pairs it with an autonomous **RWA (Real-World Asset) Analysis Agent** that pays for premium on-chain analysis via x402 micropayments.
+The x402 Foundation ships packages for EVM, Solana, and Stellar — but **NOT Casper**. FORGE fills that gap, pairing a native x402 client + facilitator with an autonomous **RWA (Real-World Asset) Analysis Agent** that pays for premium on-chain analysis via x402 micropayments (1 CSPR per request).
 
 ## Architecture
 
