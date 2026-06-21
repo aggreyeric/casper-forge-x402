@@ -155,10 +155,9 @@ docker compose up --build      # app on :3000 + casper-client sidecar
 - **Express** — resource server middleware
 - **x402 Protocol** — HTTP 402 payment standard
 
-## 📸 Screenshots
-| Dashboard | x402 Payment Flow |
-|---|---|
-| ![dashboard](docs/dashboard.png) 
+## 📸 Screenshot
+
+![x402 Payment Flow](docs/payment-flow.png) 
 
 ## License
 MIT
