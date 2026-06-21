@@ -161,3 +161,7 @@ docker compose up --build      # app on :3000 + casper-client sidecar
 
 ## License
 MIT
+
+## 🤖 AI Assistants
+
+→ See [CLAUDE.md](./CLAUDE.md) for AI coding assistant context.
