@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casper Forge x402 — API Reference</title>
+<style>
+  :root {
+    --bg: #0a0a1a;
+    --surface: #141428;
+    --border: #2a2a4a;
+    --text: #e0e0f0;
+    --accent: #00d4ff;
+    --green: #00ff88;
+    --yellow: #ffd700;
+    --red: #ff4444;
+    --code-bg: #1a1a2e;
+    --font-mono: 'SF Mono', 'Fira Code', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 { color: var(--accent); font-size: 2rem; margin-bottom: 0.5rem; }
+  h2 { color: var(--accent); font-size: 1.4rem; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { color: var(--green); font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+  p { margin: 0.5rem 0; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+  .badge-ts { background: #3178C6; color: white; }
+  .badge-cspr { background: #00d4ff; color: #0a0a1a; }
+  .badge-x402 { background: #ffd700; color: #0a0a1a; }
+  .badge-express { background: #333; color: white; }
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    min-width: 150px;
+  }
+  .flow-step .num {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--bg);
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  .flow-arrow { color: var(--accent); font-size: 1.5rem; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  code {
+    font-family: var(--font-mono);
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  pre code { background: none; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th, td { padding: 0.6rem 1rem; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--surface); color: var(--accent); }
+  .method-get { color: var(--green); font-weight: bold; }
+  .method-post { color: var(--yellow); font-weight: bold; }
+  .status-402 { color: var(--red); font-weight: bold; }
+  .status-200 { color: var(--green); font-weight: bold; }
+  .subtitle { color: #888; font-size: 1rem; margin-bottom: 2rem; }
+  .section { margin: 1rem 0; }
+  .note {
+    background: var(--surface);
+    border-left: 3px solid var(--yellow);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>Casper Forge x402</h1>
+<p class="subtitle">First native x402 payment protocol implementation for Casper Network</p>
+
+<span class="badge badge-ts">TypeScript</span>
+<span class="badge badge-cspr">CSPR</span>
+<span class="badge badge-x402">x402 Protocol</span>
+<span class="badge badge-express">Express</span>
+
+<h2>Payment Flow</h2>
+<div class="flow">
+  <div class="flow-step">
+    <div class="num">1</div>
+    <div><strong>402</strong></div>
+    <div style="font-size:0.85rem;color:#888">Payment Required</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="num">2</div>
+    <div><strong>SIGN</strong></div>
+    <div style="font-size:0.85rem;color:#888">Client Signs CSPR Transfer</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="num">3</div>
+    <div><strong>VERIFY</strong></div>
+    <div style="font-size:0.85rem;color:#888">On-Chain Settlement</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="num">4</div>
+    <div><strong>200</strong></div>
+    <div style="font-size:0.85rem;color:#888">Resource Delivered</div>
+  </div>
+</div>
+
+<h2>Quick Start — Express Middleware</h2>
+<pre><code>import express from 'express';
+import { x402Middleware } from 'casper-forge-x402';
+
+const app = express();
+
+// Protect any route with x402 CSPR payment
+app.get('/api/analyze-rwa',
+  x402Middleware({
+    amount: '1000000000',  // 1 CSPR in motes
+    wallet: 'account-hash-0123...',
+    description: 'RWA compliance analysis',
+    chain: 'casper-test',   // or 'casper' for mainnet
+  }),
+  (req, res) => {
+    res.json({ result: 'analysis data', paid: true });
+  }
+);
+
+app.listen(3000);</code></pre>
+
+<h2>Core Exports</h2>
+<table>
+  <tr><th>Export</th><th>Type</th><th>Description</th></tr>
+  <tr><td><code>x402Middleware</code></td><td>Function</td><td>Express middleware — returns 402 or settles payment</td></tr>
+  <tr><td><code>X402AgentClient</code></td><td>Class</td><td>Client SDK for paying x402-protected endpoints</td></tr>
+  <tr><td><code>createPaymentHeader</code></td><td>Function</td><td>Builds X-PAYMENT header with requirements</td></tr>
+  <tr><td><code>verifyPaymentSignature</code></td><td>Function</td><td>Verifies Ed25519 payment signature</td></tr>
+  <tr><td><code>settlePayment</code></td><td>Function</td><td>Deploys CSPR transfer to Casper chain</td></tr>
+  <tr><td><code>generatePaymentReference</code></td><td>Function</td><td>Creates unique payment reference ID</td></tr>
+  <tr><td><code>csprToMotes</code></td><td>Function</td><td>Converts CSPR → motes (× 10⁹)</td></tr>
+  <tr><td><code>motesToCspr</code></td><td>Function</td><td>Converts motes → CSPR</td></tr>
+</table>
+
+<h2>Middleware Options</h2>
+<table>
+  <tr><th>Option</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  <tr><td><code>amount</code></td><td>string</td><td>Yes</td><td>Amount in motes (1 CSPR = 1,000,000,000 motes)</td></tr>
+  <tr><td><code>wallet</code></td><td>string</td><td>Yes</td><td>Resource server wallet (Casper public key hex)</td></tr>
+  <tr><td><code>description</code></td><td>string</td><td>Yes</td><td>Description of the protected resource</td></tr>
+  <tr><td><code>mimeType</code></td><td>string</td><td>No</td><td>Response MIME type (default: application/json)</td></tr>
+  <tr><td><code>chain</code></td><td>string</td><td>No</td><td>'casper-test' or 'casper' (default: casper-test)</td></tr>
+  <tr><td><code>rpcEndpoint</code></td><td>string</td><td>No</td><td>Casper RPC endpoint for settlement</td></tr>
+</table>
+
+<h2>HTTP Protocol</h2>
+
+<h3>Step 1: Client Request (No Payment)</h3>
+<pre><code>GET /api/analyze-rwa HTTP/1.1
+Host: api.casper-forge.io</code></pre>
+
+<h3>Step 2: Server Response (402 Payment Required)</h3>
+<pre><code>HTTP/1.1 <span class="status-402">402 Payment Required</span>
+WWW-Authenticate: x402
+X-PAYMENT: {"version":1,"amount":"1000000000","asset":"CSPR",...}
+
+{
+  "error": "Payment Required",
+  "x402Version": 1,
+  "accepts": {
+    "amount": "1000000000",
+    "asset": "CSPR",
+    "chain": "casper-test",
+    "wallet": "account-hash-...",
+    "paymentReference": "pay_abc123..."
+  },
+  "instructions": {
+    "1": "Create a Casper transfer with the specified amount",
+    "2": "Sign the transfer with your Ed25519 private key",
+    "3": "Send payment payload in X-PAYMENT-SIGNATURE header",
+    "4": "Retry this request with the payment header"
+  }
+}</code></pre>
+
+<h3>Step 3: Client Pays (With Payment Header)</h3>
+<pre><code>GET /api/analyze-rwa HTTP/1.1
+Host: api.casper-forge.io
+X-PAYMENT-SIGNATURE: {"payload":"...","signature":"..."}</code></pre>
+
+<h3>Step 4: Server Delivers (<span class="status-200">200 OK</span>)</h3>
+<pre><code>HTTP/1.1 <span class="status-200">200 OK</span>
+
+{
+  "result": "analysis data",
+  "paid": true,
+  "settlement": { "deploy_hash": "0x...", "cost": "1 CSPR" }
+}</code></pre>
+
+<div class="note">
+  <strong>Why FORGE?</strong> Unlike competitor x402 implementations that use header-only mock validation,
+  Casper Forge performs <em>real on-chain CSPR transfers</em> via the Casper deploy API.
+  Every payment is cryptographically verified and settled on the Casper blockchain.
+</div>
+
+<h2>Architecture</h2>
+<pre style="font-size: 0.8rem;">
+┌──────────────┐     402      ┌──────────────────┐
+│              │ ──────────▶ │                  │
+│  AI Agent    │              │  FORGE Server    │
+│  (Client)    │ ◀────────── │  (Middleware)     │
+│              │  X-PAYMENT   │                  │
+└──────┬───────┘              └────────┬─────────┘
+       │                                │
+       │  Ed25519 Signed Transfer      │  Deploy + Verify
+       ▼                                ▼
+┌──────────────┐              ┌──────────────────┐
+│  CSPR Wallet │              │  Casper Network  │
+│  (Agent Key)  │              │  (Testnet/Main)  │
+└──────────────┘              └──────────────────┘
+</pre>
+
+<h2>Links</h2>
+<div class="section">
+  <strong>GitHub:</strong> <a href="https://github.com/aggreyeric/casper-forge-x402">aggreyeric/casper-forge-x402</a><br>
+  <strong>x402 Protocol:</strong> <a href="https://github.com/x402-foundation/x402">github.com/x402-foundation/x402</a><br>
+  <strong>Casper Network:</strong> <a href="https://casper.network">casper.network</a>
+</div>
+
+</body>
+</html>
