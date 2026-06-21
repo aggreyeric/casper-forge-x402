@@ -76,8 +76,13 @@ contract/
 scripts/
   demo.sh                    boots server + hits every endpoint with annotated output
   deploy-contract.sh         deploys contract, writes .deploy.env
+docs/
+  api-reference.html         browsable API reference (public exports + demo endpoints)
 docker-compose.yml           forge-app:3000 + optional casper-client sidecar
 ```
+
+> **API reference:** a static, browsable reference lives at [`docs/api-reference.html`](docs/api-reference.html)
+> (open it directly in a browser — no server needed).
 
 ### Contract entry points (Rust/WASM)
 `init()`, `settle(payment_reference, payer, amount, deploy_hash)` (**idempotent** — replays
