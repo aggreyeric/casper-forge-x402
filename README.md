@@ -1,8 +1,8 @@
 # FORGE x402 — First x402 Payment Protocol for Casper Network
 
-> **The first native implementation of the x402 HTTP-402 payment protocol on Casper Network.** An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, just a signed Ed25519 transfer.
+![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6) ![x402](https://img.shields.io/badge/protocol-x402-orange) ![Casper](https://img.shields.io/badge/blockchain-Casper-blue) ![Tests 24](https://img.shields.io/badge/tests-24%20passed-success) ![License](https://img.shields.io/badge/license-MIT-green) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
-![Casper](https://img.shields.io/badge/Casper-Condor%202.0-blue) ![Rust](https://img.shields.io/badge/Rust-WASM%20Contract-orange) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6) ![x402](https://img.shields.io/badge/x402-Payment%20Protocol-brightgreen) ![Tests](https://img.shields.io/badge/tests-24%20passing-success) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker) ![License](https://img.shields.io/badge/license-MIT-green)
+> **The first native implementation of the x402 HTTP-402 payment protocol on Casper Network.** An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, just a signed Ed25519 transfer.
 
 _Built for the **Casper Agentic Buildathon 2026**._
 
