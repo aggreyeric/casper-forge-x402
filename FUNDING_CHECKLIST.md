@@ -12,29 +12,51 @@ This is the **only human step** between "demo mode" and "fully live." ~5 minutes
 | Public key (Ed25519) | `01f66346cc4db2d0a580b27f75b356a54c814dff74e73ccd44699b53e34e6ee704` |
 | Account hash | `account-hash-9dfca1946c215658c40e58f3d02146e92fd1b12bf2368a75cf7935a3582d7d08` |
 | Network | Casper Testnet (Condor 2.0) — `casper-test` |
-| Minimum needed | ~5 CSPR (contract install payment). Faucet typically grants more — keep the surplus for `settle()` gas. |
+| Minimum needed | **≥ 5 CSPR** for the one-time contract install + a buffer of **~3–5 CSPR** for per-call settlement gas. The faucet grants more than this — keep the surplus. |
 
-> This is a **public key** — safe to share. The matching secret key stays in `.keys/secret_key.pem` (never paste that anywhere).
+### 💰 Gas budget (from README)
+
+| Operation | Cost | Source |
+|-----------|------|--------|
+| Contract install (one-time, `deploy-contract.sh`) | **5 CSPR** | `--payment-amount 5000000000` (5 CSPR in motes) |
+| Each premium settlement (`settlePayment()`) | **1 CSPR** per `/api/rwa-agent/premium` or `/api/analyze-rwa` call | README "Quick Start" / x402 flow |
+| Demo / settlement reserve | keep a **≥ 3 CSPR** balance at all times | README "Keep the wallet topped up" |
+
+> 👉 Target **≥ 8 CSPR** after claiming so you can deploy + run a handful of demo settlements without re-funding mid-demo.
+
+> This is a **public key** — safe to share (and required for the DoraHacks submission, see below). The matching secret key stays in `.keys/secret_key.pem` — **never paste it anywhere**, never commit it to git, never put it in the submission.
+
+### 👛 Wallet to use
+
+You do **not** need the private key to *fund* this account — the faucet only needs the public key. To reach the faucet and view balances/deploys on cspr.live, either works:
+
+- **cspr.live built-in wallet** — sign in with GitHub on https://testnet.cspr.live/. **Recommended for this checklist** (lowest friction).
+- **Casper Signer** (official browser extension) — alternative if you've already imported this keypair into it. Not required.
+
+Both connect to the same testnet; pick whichever you already have set up.
 
 ---
 
-## Step 1 — Sign in to the faucet
+## Step 1 — Open the faucet & sign in
 
-1. Go to 👉 **https://testnet.cspr.live/**
+1. Go to 👉 **https://testnet.cspr.live/faucet** (exact URL — drops you straight on the Faucet page).
 2. Click **Sign In** (top right) → authenticate with **GitHub**.
-   (The faucet requires a GitHub login — this is the human step the script can't do.)
+   - This uses the **cspr.live wallet** (GitHub-backed). **Casper Signer** (browser extension) is an alternative, but **not required** — GitHub sign-in is the simplest path.
+   - The faucet's GitHub login is the human step the deploy script cannot perform for you.
+3. After signing in you should land back on the **Faucet** page. If you land on the dashboard instead, re-open **https://testnet.cspr.live/faucet**.
 
-## Step 2 — Claim CSPR for the account
+## Step 2 — Claim CSPR for the deployer account
 
-1. Open the **Faucet** page.
-2. Paste the public key above:
+1. On the Faucet page (**https://testnet.cspr.live/faucet**), paste the deployer public key:
    ```
    01f66346cc4db2d0a580b27f75b356a54c814dff74e73ccd44699b53e34e6ee704
    ```
-3. Click **Claim** / **Request funds**.
-4. Wait ~30s, then confirm the balance on your account page (should show ≥ 5 CSPR).
+2. Click **Claim** / **Request funds**.
+3. Wait ~30s for the transfer to finalize, then confirm the balance:
+   - Open **https://testnet.cspr.live/account/01f66346cc4db2d0a580b27f75b356a54c814dff74e73ccd44699b53e34e6ee704**
+   - Balance should show **≥ 5 CSPR** (aim for **≥ 8 CSPR** so you can deploy + demo several premium calls).
 
-> ⚠️ If the faucet is out of funds or rate-limited, try the alternate faucet at **https://testnet.cspr.cloud/** and retry.
+> ⚠️ If the faucet is out of funds or rate-limited, try the alternate faucet at **https://testnet.cspr.cloud/** and retry — same public key, same network.
 
 ## Step 3 — Deploy the contract
 
