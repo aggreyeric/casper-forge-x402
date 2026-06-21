@@ -2,6 +2,20 @@
 
 ![CI](https://img.shields.io/badge/CI-passing-brightgreen) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6) ![x402](https://img.shields.io/badge/protocol-x402-orange) ![Casper](https://img.shields.io/badge/blockchain-Casper-blue) ![Tests 24](https://img.shields.io/badge/tests-24%20passed-success) ![License](https://img.shields.io/badge/license-MIT-green) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
+## Why FORGE?
+
+> **The x402 Foundation ships implementations for EVM, Solana, and Stellar — but NOT Casper. FORGE closes that gap.**
+
+Unlike portfolio apps that bolt on x402 as a feature flag, FORGE implements the **full protocol stack**: client → facilitator → on-chain settlement with real Ed25519-signed transfers. No external facilitator dependency. No mock validation.
+
+| | FORGE x402 | Typical x402 Integration |
+|---|---|---|
+| **On-chain settlement** | ✅ Real CSPR transfer | ⚠️ Header validation only |
+| **External facilitator** | ❌ None needed | ✅ Depends on third party |
+| **Idempotent settlement** | ✅ Anti-double-spend registry | ❌ Not implemented |
+| **LLM dependency** | None (deterministic rules) | GPT-4o / Claude required |
+| **Payment primitive** | Purpose-built settlement contract | Portfolio state log |
+
 > **The FIRST native x402 payment protocol for Casper.** The x402 Foundation ships EVM, Solana, and Stellar — **FORGE closes the gap and brings x402 to Casper natively**, with real on-chain settlement and an idempotent settlement contract. An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, no third-party facilitator, just a signed Ed25519 transfer.
 
 _Built for the **Casper Agentic Buildathon 2026**._
