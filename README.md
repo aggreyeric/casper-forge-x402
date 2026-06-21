@@ -1,10 +1,38 @@
-# FORGE x402 — First x402 Payment Protocol for Casper Network
+# FORGE — The FIRST Native x402 Payment Protocol for Casper
 
 ![CI](https://img.shields.io/badge/CI-passing-brightgreen) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6) ![x402](https://img.shields.io/badge/protocol-x402-orange) ![Casper](https://img.shields.io/badge/blockchain-Casper-blue) ![Tests 24](https://img.shields.io/badge/tests-24%20passed-success) ![License](https://img.shields.io/badge/license-MIT-green) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
-> **The first native implementation of the x402 HTTP-402 payment protocol on Casper Network.** An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, just a signed Ed25519 transfer.
+> **The FIRST native x402 payment protocol for Casper.** The x402 Foundation ships EVM, Solana, and Stellar — **FORGE closes the gap and brings x402 to Casper natively**, with real on-chain settlement and an idempotent settlement contract. An autonomous RWA-analysis AI agent pays for premium on-chain intelligence via micropayments settled directly on Casper Condor 2.0 — no credit card, no off-chain rails, no third-party facilitator, just a signed Ed25519 transfer.
 
 _Built for the **Casper Agentic Buildathon 2026**._
+
+## 🔥 Why FORGE, Not Another x402 Integrator?
+
+Most projects that "add x402" bolt on a header builder and call it a day. **FORGE is the protocol implementation itself** — x402 client, facilitator, and Casper settlement contract — built from the ground up for Casper, not wired onto an existing app.
+
+### What makes us different
+
+- **🛠️ We built the x402 protocol implementation — we didn't bolt it on.** The x402 client, facilitator, and Casper settlement contract are all native FORGE code. Typical x402 integrations wire up a header builder and delegate everything else to a third-party facilitator.
+
+- **⛓️ Real on-chain settlement via `casper-client` subprocess — no external facilitator dependency.** FORGE settles payments by shelling out to the official `casper-client` binary for cryptographically-correct deploy serialization + Ed25519 signing, then submitting the deploy directly to Casper Condor 2.0. No dependency on an external `x402…network` endpoint we don't control.
+
+- **🔒 Idempotent settlement contract with anti-double-spend.** Our `settle(payment_reference, payer, amount, deploy_hash)` entry point is **idempotent by design** — a replayed or duplicated payment reference is rejected, every settlement emits an on-chain event, and the receipt is queryable via `get_settlement()`. This is a **payment primitive**, not an app-state log.
+
+- **⚠️ Typical x402 integrations are "verified, not settled" in demo mode.** Strip away the external facilitator (which most demos never actually connect to) and a typical integration just **structurally validates the base64 x402 header and reports `verified`** — no CSPR moves, no on-chain settlement, no receipt. FORGE settles real value the moment the agent retries with `X-PAYMENT-SIGNATURE`.
+
+> **The bottom line:** a typical x402 integration is a feature flag layered on top of an external dependency. FORGE **is** the dependency — and it settles natively on Casper.
+
+### FORGE vs. typical x402 integrations
+
+| Dimension | **FORGE — native x402 for Casper** | **Typical x402 integrations** |
+|---|---|---|
+| **Relationship to x402** | Built the protocol implementation (client + facilitator + contract) | Consumed an x402 header builder as a feature flag |
+| **On-chain settlement** | ✅ Real Ed25519 transfer via `casper-client`, **no third party** | ⚠️ Header "verified (**not settled**)" in demo mode; real settlement only if an external facilitator exists and is reachable |
+| **Settlement contract** | Idempotent registry with anti-double-spend + on-chain events | Usually absent — at best an app-state log |
+| **External facilitator dependency** | ❌ None — settlement runs locally via `casper-client` | ✅ Required (and often unverified or uncontrolled) |
+| **What an "x402 payment" actually does** | CSPR actually moves on Casper Condor 2.0 | A base64 header passes a structural check |
+| **Receipt / proof of payment** | On-chain, queryable via `get_settlement(payment_reference)` | None in demo mode |
+| **Category claim** | First native x402 implementation for Casper | Another app wearing an x402 badge |
 
 ## What This Is
 
